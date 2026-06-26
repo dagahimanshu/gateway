@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  backend:
+    build: ../scheduler
+    container_name: scheduler-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod
+    volumes:
+      - oauth-tokens:/var/data/scheduler/oauth-tokens
+      - sqlite-data:/app/data
+    expose:
+      - "8080"
+
+  frontend:
+    build:
+      context: ../smart-orchestrator
+      args:
+        NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+    container_name: scheduler-frontend
+    restart: unless-stopped
+    expose:
+      - "3000"
+    depends_on:
+      - backend
+
+  gateway:
+    image: nginx:alpine
+    container_name: scheduler-gateway
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  oauth-tokens:
+  sqlite-data:
