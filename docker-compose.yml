@@ -27,6 +27,25 @@ services:
     depends_on:
       - backend
 
+  mood-detector:
+    build: ../mood-detector
+    container_name: mood-detector
+    restart: unless-stopped
+    environment:
+      - HUGGINGFACE_API_TOKEN=${HUGGINGFACE_API_TOKEN}
+      - HUGGINGFACE_VISION_MODEL=${HUGGINGFACE_VISION_MODEL:-Qwen/Qwen3-VL-8B-Instruct}
+    expose:
+      - "8080"
+    mem_limit: 600m
+
+  mood-drink-api:
+    build: ../mood-drink-api
+    container_name: mood-drink-api
+    restart: unless-stopped
+    expose:
+      - "3001"
+    mem_limit: 256m
+
   gateway:
     image: nginx:alpine
     container_name: scheduler-gateway
@@ -38,6 +57,8 @@ services:
     depends_on:
       - backend
       - frontend
+      - mood-detector
+      - mood-drink-api
 
 volumes:
   oauth-tokens:
