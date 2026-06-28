@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Gateway
 
 Nginx reverse proxy + Docker Compose orchestrator for all backend services on a single EC2 instance.
@@ -112,3 +113,6 @@ docker-compose logs -f mood-detector        # check logs
 | **Total** | ~1.1GB |
 
 Note: t3.micro has 1GB RAM. To fit all services, mood-detector and mood-drink-api have memory limits. If the scheduler is not needed simultaneously, this works. Otherwise consider t3.small (2GB, ~$8/month).
+=======
+
+>>>>>>> origin/main
